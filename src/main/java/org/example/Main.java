@@ -7,29 +7,24 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-
-import java.time.Duration;
-import java.util.Objects;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Main {
     public static void main(String[] args) throws InterruptedException {
           String promo = "flamp";
           Coupon coupon = new Coupon();
 
+          Map<String, Object> prefs = new HashMap<>();
+          prefs.put("profile.managed_default_content_settings.images", 2);
           ChromeOptions options = new ChromeOptions();
-          options.addArguments("--window-size=1920,1200", "--ignore-certificate-errors","--headless","--silent");
+          options.setExperimentalOption("prefs", prefs);//disable picture
+          options.addArguments("--window-size=1920,1080", "--ignore-certificate-errors","--headless","--silent");
           WebDriver driver = new ChromeDriver(options);
 
           // Set the page load timeout
-          driver.manage().timeouts().pageLoadTimeout(4000, TimeUnit.MILLISECONDS);
+          driver.manage().timeouts().pageLoadTimeout(3700, TimeUnit.MILLISECONDS);
 
           try {
                 driver.get("https://amournsk.ru/catalog/");
