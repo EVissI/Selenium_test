@@ -71,8 +71,9 @@ public class SeleniumScripts {
             }
         }finally {
             driver.quit();
-            return coupon;
+
         }
+        return coupon;
     }
 
     public static Coupon River(String promo) throws InterruptedException {
@@ -106,7 +107,7 @@ public class SeleniumScripts {
             coupon.setStatus(false);
             coupon.setPromoMassage(promoErrorMassageStr);
 
-        }catch (org.openqa.selenium.InvalidSelectorException invalidSelectorException){
+        }catch (org.openqa.selenium.NoSuchElementException noSuchElementException){
             WebElement firstBlueBtnClick = driver.findElement(By.xpath("//*[@id=\"room-id-14503\"]/div[1]/div[2]/div[2]/div/div[2]/div/div"));
             firstBlueBtnClick.click();
 
@@ -131,6 +132,8 @@ public class SeleniumScripts {
                     Double.parseDouble(oldPriceStr),
                     Double.parseDouble(newPriceStr)
             ));
+        }finally {
+            driver.quit();
         }
         return coupon;
 
