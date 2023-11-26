@@ -79,11 +79,8 @@ public class SeleniumScripts {
     public static Coupon River(String promo) throws InterruptedException {
         Coupon coupon = new Coupon();
 
-        Map<String, Object> prefs = new HashMap<>();
-        prefs.put("profile.managed_default_content_settings.images", 2);
         ChromeOptions options = new ChromeOptions();
-        //options.setExperimentalOption("prefs", prefs);//disable picture
-        options.addArguments("--window-size=1920,1200", "--ignore-certificate-errors","--silent");
+        options.addArguments("--window-size=1920,1200", "--ignore-certificate-errors","--headless","--silent");
         WebDriver driver = new ChromeDriver(options);
 
         driver.get("https://www.riverpark.ru/booking/");
