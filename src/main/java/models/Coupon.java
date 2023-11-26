@@ -50,7 +50,7 @@ public class Coupon {
         return "\"CouponData\" :{" +
                 "\"promoName\"=\"" + promoName + '\'' +
                 ", \"promoValue\"=" + promoValue +
-                ", \"promoText\"=\"" + promoMassage + '\"' +
+                ", \"promoMassage\"=\"" + promoMassage + '\"' +
                 ", \"status\"=" + status +
                 ", \"workOnce\"=" + workOnce +
                 ", \"limits\"=\"" + limits + '\"' +
