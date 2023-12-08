@@ -1,4 +1,4 @@
-package math;
+package devtools.math;
 
 public class MathOperation {
     // Вычисление процентного изменения

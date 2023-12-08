@@ -1,15 +1,21 @@
 package scripts;
 
-import math.MathOperation;
+import database.DAO;
+import devtools.cookie.DAOCookie;
+import devtools.math.MathOperation;
 import models.Coupon;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.io.IOException;
+import java.time.Duration;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class SeleniumScripts {
@@ -75,12 +81,11 @@ public class SeleniumScripts {
         }
         return coupon;
     }
-
     public static Coupon River(String promo) throws InterruptedException {
         Coupon coupon = new Coupon();
 
         ChromeOptions options = new ChromeOptions();
-        options.addArguments("--window-size=1920,1200", "--ignore-certificate-errors","--headless","--silent");
+        options.addArguments("--window-size=1920,1200", "--ignore-certificate-errors","--silent");
         WebDriver driver = new ChromeDriver(options);
 
         driver.get("https://www.riverpark.ru/booking/");
@@ -94,7 +99,7 @@ public class SeleniumScripts {
         blueButtonClick.click();
 
         driver.switchTo().parentFrame();
-        Thread.sleep(3000);
+        Thread.sleep(4000);
         driver.switchTo().frame(1);
 
         try {
@@ -105,11 +110,11 @@ public class SeleniumScripts {
             coupon.setPromoMassage(promoErrorMassageStr);
 
         }catch (org.openqa.selenium.NoSuchElementException noSuchElementException){
-            WebElement firstBlueBtnClick = driver.findElement(By.xpath("//*[@id=\"room-id-14503\"]/div[1]/div[2]/div[2]/div/div[2]/div/div"));
+            WebElement firstBlueBtnClick = driver.findElement(By.xpath("//*[@id=\"room-id-14503\"]/div[1]/div[2]/div[2]/div[1]/div[2]/div"));
             firstBlueBtnClick.click();
 
             driver.switchTo().parentFrame();
-            Thread.sleep(3000);
+            Thread.sleep(4000);
             driver.switchTo().frame(1);
 
             WebElement moreInfoBtnClick = driver.findElement(By.xpath("//*[@id=\"room-id-\"]/div[1]/div/div/div/div/div[2]/div[1]/div[1]/div[1]/div"));
@@ -133,10 +138,53 @@ public class SeleniumScripts {
             driver.quit();
         }
         return coupon;
-
-
     }
 
+    public static Coupon Sbermarket(String phoneNumber,String promo) throws IOException, InterruptedException {
+        DAO dao = new DAO();
+        Coupon coupon = new Coupon();
+        Random random = new Random();
 
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--window-size=1920,1200", "--ignore-certificate-errors","--silent","--disable-blink-features=AutomationControlled");
+        WebDriver driver = new ChromeDriver(options);
+        driver.get("https://sbermarket.ru/");
+
+        DAOCookie.takeCookieFromDB(dao,driver,phoneNumber);
+
+        driver.navigate().to("https://sbermarket.ru/");
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+
+        WebElement cartClick = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("CounterBadge_badgeContainer__utKE1")));
+        Thread.sleep(random.nextInt(1000,2000));
+        cartClick.click();
+        WebElement buyClick = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("CartButton_content__6gh5O")));
+        Thread.sleep(random.nextInt(1000,2000));
+        buyClick.click();
+        WebElement promoInput = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("FormGroup0")));
+        promoInput.sendKeys(promo);
+        Thread.sleep(random.nextInt(1000,2000));
+        WebElement promoEnter = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[1]/div[2]/main/aside/div/div[2]/div[1]/button")));
+        promoEnter.click();
+        Thread.sleep(random.nextInt(1000,2000));
+
+        try{
+            WebElement promoDescr = driver.findElement(By.className("FormGroup_description__tYxjD"));
+            coupon.setStatus(false);
+            coupon.setPromoName(promo);
+            coupon.setPromoMassage(promoDescr.getText());
+        }catch (org.openqa.selenium.NoSuchElementException noSuchElementException){
+            WebElement discountSize = driver.findElement(By.className(("OrderDescription_price__udMTB OrderDescription_sm__BdJjG OrderDescription_discount__8BNKQ")));
+            coupon.setStatus(true);
+            coupon.setPromoName(promo);
+            coupon.setPromoMassage(discountSize.getText());
+            WebElement promoCancel = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[1]/div[2]/main/aside/div/div[2]/div[1]/button")));
+            promoCancel.click();
+        }
+        DAOCookie.putCokieInDB(dao,driver,phoneNumber);
+        driver.quit();
+        return coupon;
+
+    }
 
 }

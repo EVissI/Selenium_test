@@ -48,8 +48,8 @@ public class Coupon {
     @Override
     public String toString() {
         return "\"CouponData\" :{" +
-                "\"promoName\"=\"" + promoName + '\'' +
-                ", \"promoValue\"=" + promoValue +
+                "\"promoName\"=\"" + promoName + '\"' +
+                ", \"promoValue\"=" + promoValue + '\"' +
                 ", \"promoMassage\"=\"" + promoMassage + '\"' +
                 ", \"status\"=" + status +
                 ", \"workOnce\"=" + workOnce +
