@@ -163,23 +163,25 @@ public class SeleniumScripts {
         buyClick.click();
         WebElement promoInput = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("FormGroup0")));
         promoInput.sendKeys(promo);
-        Thread.sleep(random.nextInt(1000,2000));
+        Thread.sleep(2000);
         WebElement promoEnter = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[1]/div[2]/main/aside/div/div[2]/div[1]/button")));
         promoEnter.click();
         Thread.sleep(random.nextInt(1000,2000));
 
         try{
+            Thread.sleep(2000);
             WebElement promoDescr = driver.findElement(By.className("FormGroup_description__tYxjD"));
             coupon.setStatus(false);
             coupon.setPromoName(promo);
             coupon.setPromoMassage(promoDescr.getText());
-        }catch (org.openqa.selenium.NoSuchElementException noSuchElementException){
-            WebElement discountSize = driver.findElement(By.className(("OrderDescription_price__udMTB OrderDescription_sm__BdJjG OrderDescription_discount__8BNKQ")));
+        }catch (org.openqa.selenium.NoSuchElementException noSuchElementException ){
+            WebElement discountSize = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[1]/div[2]/main/aside/div/div[2]/div[3]/div[1]/span[2]")));
             coupon.setStatus(true);
             coupon.setPromoName(promo);
             coupon.setPromoMassage(discountSize.getText());
             WebElement promoCancel = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[1]/div[2]/main/aside/div/div[2]/div[1]/button")));
             promoCancel.click();
+            Thread.sleep(5000);
         }
         DAOCookie.putCokieInDB(dao,driver,phoneNumber);
         driver.quit();
